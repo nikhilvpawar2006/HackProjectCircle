@@ -260,7 +260,51 @@ Router.register('profile', function(el) {
   });
 
   el.querySelector('#edit-profile-btn')?.addEventListener('click', () => {
-    showToast('Profile editor coming soon! ✍️', 'info');
+    const p = State.get('profileData');
+    const modalHtml = `
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="modal-title">Edit Profile</h2>
+        <button class="modal-close-btn" aria-label="Close modal">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input type="text" id="edit-name" class="form-input" value="${p.name}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Handle</label>
+        <input type="text" id="edit-handle" class="form-input" value="${p.handle}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Location</label>
+        <input type="text" id="edit-location" class="form-input" value="${p.location}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bio</label>
+        <textarea id="edit-bio" class="form-input">${p.bio}</textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary modal-close-btn" style="position:static;">Cancel</button>
+        <button class="btn btn-primary" id="save-profile-btn">Save Changes</button>
+      </div>
+    `;
+    
+    // Using global openModal
+    if (typeof openModal === 'function') {
+      openModal(modalHtml);
+      
+      // Save listener
+      document.getElementById('save-profile-btn')?.addEventListener('click', () => {
+        p.name = document.getElementById('edit-name').value;
+        p.handle = document.getElementById('edit-handle').value;
+        p.location = document.getElementById('edit-location').value;
+        p.bio = document.getElementById('edit-bio').value;
+        
+        State.set('profileData', p);
+        closeModal();
+        showToast('Profile updated!', 'success');
+        Router.navigate('profile'); // Re-render profile
+      });
+    }
   });
   el.querySelector('#share-profile-btn')?.addEventListener('click', () => {
     navigator.clipboard?.writeText(window.location.href).catch(() => {});

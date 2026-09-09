@@ -33,6 +33,41 @@ function showToast(message, type = 'success', duration = 3500) {
   toast.addEventListener('click', () => { clearTimeout(timer); remove(); });
 }
 
+// ── Global Modal System ────────────────────────
+function openModal(contentHtml) {
+  const container = document.getElementById('modal-container');
+  const contentArea = document.getElementById('modal-content-area');
+  if (!container || !contentArea) return;
+  
+  contentArea.innerHTML = contentHtml;
+  container.removeAttribute('aria-hidden');
+  
+  // Close buttons inside modal
+  contentArea.querySelectorAll('.modal-close-btn').forEach(btn => {
+    btn.addEventListener('click', closeModal);
+  });
+}
+
+function closeModal() {
+  const container = document.getElementById('modal-container');
+  if (container) {
+    container.setAttribute('aria-hidden', 'true');
+  }
+}
+
+// Close modal when clicking backdrop
+document.addEventListener('DOMContentLoaded', () => {
+  const backdrop = document.querySelector('.modal-backdrop');
+  if (backdrop) {
+    backdrop.addEventListener('click', closeModal);
+  }
+});
+
+// Close on escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
 // ── Mobile Sidebar ─────────────────────────────
 const sidebar = document.getElementById('sidebar');
 const overlay = document.getElementById('sidebar-overlay');

@@ -15,6 +15,8 @@ const State = (() => {
     circlesFilter: 'all',
     activitiesFilter: 'all',
     notifications: { matches: 3, messages: 5 },
+    userPosts: typeof POSTS_DATA !== 'undefined' ? [...POSTS_DATA] : [],
+    likedPosts: new Set(),
     currentProfileTab: 'about',
     profileData: {
       name: "Alex Rivera", handle: "@alexr",

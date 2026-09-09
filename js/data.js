@@ -302,3 +302,24 @@ const INTENT_DATA = [
   { label: "Play", emoji: "🎮", count: "3,209 players" },
   { label: "Discuss", emoji: "💬", count: "5,432 thinkers" }
 ];
+
+const POSTS_DATA = [
+  {
+    id: 1, userId: 1, authorName: "Priya Menon", authorHandle: "@priyam",
+    authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=priya&backgroundColor=b6e3f4",
+    content: "Just hit a major milestone with our RAG pipeline! Context retrieval is finally reliable enough for production. Let me know if you want to chat about chunking strategies. 🚀",
+    time: "2 hours ago", likes: 14, comments: 3, intent: "Build"
+  },
+  {
+    id: 2, userId: 3, authorName: "Lena Fischer", authorHandle: "@lenaf",
+    authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=lena&backgroundColor=c0aede",
+    content: "Experimenting with some new GLSL shaders. The math behind fluid dynamics is beautiful, but my GPU sounds like it's preparing for liftoff. 🌪️",
+    time: "5 hours ago", likes: 32, comments: 8, intent: "Create"
+  },
+  {
+    id: 3, userId: 6, authorName: "Kenji Nakamura", authorHandle: "@kenjin",
+    authorAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=kenji&backgroundColor=b6e3f4",
+    content: "Hot take: We don't need a new JS framework every month. We need better understanding of web fundamentals and DOM performance. Let's discuss.",
+    time: "1 day ago", likes: 89, comments: 45, intent: "Discuss"
+  }
+];

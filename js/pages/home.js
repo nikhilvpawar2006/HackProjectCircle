@@ -81,17 +81,25 @@ Router.register('home', function(el) {
     <div class="grid-2 reveal">
       <!-- Activity Feed -->
       <div>
-        <h2 class="section-title mb-4">Your Circle Activity</h2>
-        <div class="card" id="feed-container">
-          ${FEED_ITEMS.map(item => `
-            <div class="feed-item">
-              <div class="feed-dot"></div>
-              <div>
-                <div class="feed-text">${item.text}</div>
-                <div class="feed-time">${item.time}</div>
-              </div>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="section-title">Your Feed</h2>
+        </div>
+        
+        <!-- Post Composer -->
+        <div class="post-composer">
+          <textarea id="post-composer-input" placeholder="What are you building or thinking about today?"></textarea>
+          <div class="post-composer-footer">
+            <div class="text-sm text-muted flex items-center gap-2">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              Attach
             </div>
-          `).join('')}
+            <button class="btn btn-primary btn-sm" id="create-post-btn">Post</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Feed Container -->
+        <div id="dynamic-feed-container">
+          <!-- Posts injected by JS -->
         </div>
       </div>
 
@@ -200,6 +208,122 @@ Router.register('home', function(el) {
 
   // Animate stat counter
   animateCounter('stat-users', 0, 26100, 1200, v => (v/1000).toFixed(1) + 'K');
+
+  // Feed rendering
+  function renderFeed() {
+    const feedContainer = el.querySelector('#dynamic-feed-container');
+    if (!feedContainer) return;
+    const posts = State.get('userPosts') || [];
+    
+    if (posts.length === 0) {
+      feedContainer.innerHTML = '<div class="empty-state">No posts yet. Start the conversation!</div>';
+      return;
+    }
+
+    feedContainer.innerHTML = posts.map(post => {
+      const isLiked = State.has('likedPosts', post.id);
+      return `
+        <div class="post-card reveal">
+          <div class="post-header">
+            <div class="avatar avatar-sm"><img src="${post.authorAvatar}" alt="${post.authorName}"></div>
+            <div>
+              <div class="post-author-name">${post.authorName}</div>
+              <div class="post-author-handle">${post.authorHandle}</div>
+            </div>
+            <div class="post-time">${post.time}</div>
+          </div>
+          <div class="post-content">${post.content}</div>
+          <div class="post-actions">
+            <button class="post-action-btn like-btn ${isLiked ? 'liked' : ''}" data-id="${post.id}" aria-label="${isLiked ? 'Unlike' : 'Like'} post">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="${isLiked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+              <span>${post.likes || 0}</span>
+            </button>
+            <button class="post-action-btn comment-btn" data-id="${post.id}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              <span>${post.comments || 0}</span>
+            </button>
+            <button class="post-action-btn share-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              Share
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Attach feed listeners
+    feedContainer.querySelectorAll('.like-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const id = parseInt(btn.dataset.id);
+        const isLiked = State.toggle('likedPosts', id);
+        
+        // Find post and update like count locally
+        const posts = State.get('userPosts');
+        const post = posts.find(p => p.id === id);
+        if (post) {
+          post.likes = isLiked ? post.likes + 1 : post.likes - 1;
+        }
+        
+        renderFeed(); // Re-render to update UI
+      });
+    });
+
+    feedContainer.querySelectorAll('.comment-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        showToast('Comments coming soon!', 'info');
+      });
+    });
+    
+    feedContainer.querySelectorAll('.share-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        showToast('Link copied to clipboard', 'success');
+      });
+    });
+
+    // Trigger reveal animations
+    setTimeout(() => {
+      feedContainer.querySelectorAll('.reveal').forEach(el => el.classList.add('revealed'));
+    }, 50);
+  }
+
+  renderFeed();
+
+  // Handle post creation
+  const composerBtn = el.querySelector('#create-post-btn');
+  const composerInput = el.querySelector('#post-composer-input');
+  
+  if (composerBtn && composerInput) {
+    composerBtn.addEventListener('click', () => {
+      const content = composerInput.value.trim();
+      if (!content) {
+        showToast('Please enter something to post.', 'warning');
+        return;
+      }
+      
+      const profile = State.get('profileData');
+      const newPost = {
+        id: Date.now(),
+        userId: 0, // 0 for current user
+        authorName: profile.name,
+        authorHandle: profile.handle,
+        authorAvatar: profile.avatar,
+        content: content,
+        time: "Just now",
+        likes: 0,
+        comments: 0,
+        intent: State.get('currentIntent') || 'Discuss'
+      };
+      
+      const posts = State.get('userPosts');
+      posts.unshift(newPost); // add to top
+      State.set('userPosts', posts);
+      
+      composerInput.value = ''; // clear input
+      renderFeed(); // update feed
+      showToast('Post published successfully! 🎉', 'success');
+    });
+  }
+
 });
 
 function updateNavIntent(intent) {

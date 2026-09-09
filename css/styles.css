@@ -1407,3 +1407,89 @@ ul { list-style: none; }
 .modal-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; margin-bottom: 8px; }
 .modal-sub { color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 24px; }
 .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+
+/* ── Global Modal (New) ── */
+.modal-container {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; opacity: 0; transition: opacity 0.3s;
+}
+.modal-container:not([aria-hidden="true"]) { pointer-events: auto; opacity: 1; }
+.modal-backdrop {
+  position: absolute; inset: 0; background: rgba(10,10,15,0.8);
+  backdrop-filter: blur(8px);
+}
+.modal-content {
+  position: relative; z-index: 1001;
+  background: var(--bg-secondary); border: 1px solid var(--border-purple);
+  border-radius: var(--radius-xl); padding: 32px; width: 90%; max-width: 500px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  transform: translateY(20px); transition: transform 0.3s;
+  max-height: 90vh; overflow-y: auto;
+}
+.modal-container:not([aria-hidden="true"]) .modal-content { transform: translateY(0); }
+.modal-close-btn {
+  position: absolute; top: 16px; right: 16px;
+  background: none; border: none; color: var(--text-muted);
+  cursor: pointer; padding: 4px; border-radius: 50%;
+}
+.modal-close-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-secondary); }
+.form-input {
+  width: 100%; padding: 10px 14px; background: var(--bg-card);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+  color: var(--text-primary); font-size: 0.9rem; transition: border-color 0.2s;
+}
+.form-input:focus { outline: none; border-color: var(--purple-400); }
+textarea.form-input { resize: vertical; min-height: 80px; }
+
+/* ── Post Composer ── */
+.post-composer {
+  background: var(--bg-card); border: 1px solid var(--border-purple);
+  border-radius: var(--radius-lg); padding: 16px; margin-bottom: 24px;
+}
+.post-composer textarea {
+  width: 100%; background: transparent; border: none; resize: none;
+  color: var(--text-primary); font-size: 0.95rem; min-height: 60px;
+}
+.post-composer textarea:focus { outline: none; }
+.post-composer-footer {
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid var(--border-subtle); padding-top: 12px; margin-top: 8px;
+}
+
+/* ── Post Feed Items ── */
+.post-card {
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px;
+}
+.post-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.post-author-name { font-weight: 700; font-size: 0.95rem; }
+.post-author-handle { font-size: 0.8rem; color: var(--text-muted); }
+.post-time { font-size: 0.75rem; color: var(--text-muted); margin-left: auto; }
+.post-content { font-size: 0.95rem; line-height: 1.6; color: var(--text-secondary); margin-bottom: 16px; }
+.post-actions { display: flex; gap: 16px; border-top: 1px solid var(--border-subtle); padding-top: 12px; }
+.post-action-btn {
+  display: flex; align-items: center; gap: 6px; background: none; border: none;
+  color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 4px 8px;
+  border-radius: var(--radius-md); transition: all 0.2s;
+}
+.post-action-btn:hover { background: var(--bg-card-hover); color: var(--text-primary); }
+.post-action-btn.liked { color: #ec4899; }
+.post-action-btn.liked svg { fill: #ec4899; stroke: #ec4899; animation: heartPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes heartPop { 0% { transform: scale(1); } 50% { transform: scale(1.4); } 100% { transform: scale(1); } }
+
+/* ── Discover Search ── */
+.discover-search-bar {
+  display: flex; gap: 12px; margin-bottom: 24px;
+}
+.search-input-wrap { flex: 1; position: relative; }
+.search-input-wrap svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+.search-input {
+  width: 100%; padding: 12px 14px 12px 42px; background: var(--bg-card);
+  border: 1px solid var(--border-subtle); border-radius: var(--radius-pill);
+  color: var(--text-primary); outline: none; transition: border-color 0.2s;
+}
+.search-input:focus { border-color: var(--purple-400); }
+.discover-filters { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
