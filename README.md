@@ -1,83 +1,35 @@
-# CIRCLE
+# CIRCLE — Reimagine Social
 
-CIRCLE is an intent-based social experience for finding people who want to do the same things you do. Choose an intent such as **Build**, **Learn**, **Create**, **Play**, **Explore**, or **Discuss**, then discover people, circles, and activities around that shared goal.
+CIRCLE is an intent-based social platform for finding people who want to do the same thing. Instead of following a popularity graph, users choose a current intent such as Build, Learn, Create, Explore, Play, or Discuss and discover people, threads, circles, and activities moving in the same direction.
 
-## Features
+## Stack
 
-- Intent-based home dashboard
-- Discover people with match scores, skills, and activity details
-- Join and browse interest-based circles
-- Find and join online or in-person activities
-- Matches and messaging views
-- Editable profile view
-- Responsive desktop sidebar and mobile navigation
-- Hash-based client-side routing
-- Toast notifications, badges, keyboard support, and reduced-friction mobile navigation
+- React + Vite + TypeScript (strict)
+- Tailwind CSS with a custom dark futuristic design system
+- React Router
+- React Hook Form + Zod validation
+- TanStack Query architecture
+- Lucide React icons
+- localStorage-backed mock persistence
 
-## Tech Stack
-
-- HTML5
-- CSS3
-- Vanilla JavaScript
-- Google Fonts: Outfit and Inter
-- DiceBear avatars for mock profile images
-
-This is a static front-end prototype. It does not currently connect to a backend or persist data between page refreshes.
-
-## Run Locally
-
-No installation or build step is required.
-
-### Option 1: Open the file
-
-Open `index.html` in a modern browser.
-
-### Option 2: Use a local server
-
-From the project directory, run any static file server. For example, with Python:
+## Run locally
 
 ```bash
-python -m http.server 8000
+npm install
+npm run dev
 ```
 
-Then open [http://localhost:8000](http://localhost:8000) in your browser.
+Open the URL printed by Vite, usually `http://localhost:5173`.
 
-## Project Structure
+## Verification
 
-```text
-circle/
-├── index.html              # Application shell and navigation
-├── css/
-│   └── styles.css          # Visual styles and responsive layout
-└── js/
-    ├── app.js              # Application startup, toasts, and mobile sidebar
-    ├── data.js             # Mock users, circles, activities, and conversations
-    ├── router.js            # Hash-based page registration and navigation
-    ├── state.js             # In-memory application state
-    └── pages/               # Render functions for each application view
-        ├── activities.js
-        ├── circles.js
-        ├── discover.js
-        ├── home.js
-        ├── matches.js
-        ├── messages.js
-        └── profile.js
+```bash
+npm run lint
+npm run build
 ```
 
-## Navigation
+## Included flows
 
-Views are available through URL hashes:
+Home feed, intent switching, post engagement, Discover search and filters, validated post creation, compatibility Matches, joinable Circles, joinable Activities, Messages UI, Profile identity, responsive sidebar/mobile navigation, toast feedback, and reduced-motion support.
 
-- `#home`
-- `#discover`
-- `#matches`
-- `#circles`
-- `#activities`
-- `#messages`
-- `#profile`
-
-## Development Notes
-
-Each page registers a render function with `Router`. Shared mock data lives in `data.js`, while temporary interaction state is managed by `State` in `state.js`. To add a new view, create a page module, register it with the router, and add its navigation link to `index.html`.
-
-The interface loads fonts and avatar images from external services, so an internet connection is recommended for the complete visual experience.
+The app is frontend-only by design. Mock content and personal interaction state are stored locally in the browser and can be replaced with API calls through the existing TanStack Query boundary.
